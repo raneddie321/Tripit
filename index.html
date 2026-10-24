@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WanderSquad — Professional Multi-Trip Planner & Split Expenses</title>
+  <meta name="description" content="Plan unlimited trips with friends. Collaborative day-by-day itineraries, smart expense splitting, shared packing checklists and squad coordination.">
+  <meta name="keywords" content="trip planner, travel with friends, group travel, split expenses, itinerary maker">
+  <link rel="canonical" href="https://wandersquad.app/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wandersquad.app/">
+  <meta property="og:title" content="WanderSquad — Group Trip Planner & Split Expenses">
+  <meta property="og:description" content="Plan epic trips with friends. Collaborative day-by-day itineraries, smart expense splitting and shared checklists.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&auto=format&fit=crop&q=80">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="WanderSquad — Group Trip Planner">
+  <meta property="twitter:description" content="Collaborative day-by-day itineraries, smart expense splitting and shared checklists for trips with friends.">
+  <meta property="twitter:image" content="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&auto=format&fit=crop&q=80">
+
+  <!-- Fonts & Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    /* Professional Trip Switcher Dropdown Styling */
+    .trip-dropdown-wrapper {
+      position: relative;
+    }
+    .trip-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      min-width: 260px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      padding: 0.5rem;
+      animation: fadeIn 150ms ease;
+    }
+    .dropdown-item {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      padding: 0.65rem 0.75rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .dropdown-item:hover {
+      background: var(--surface-raised);
+    }
+    .dropdown-item.is-active {
+      background: var(--accent-tint);
+      border-left: 3px solid var(--accent);
+    }
+  </style>
+
+  <!-- Official Google Identity Services SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="app-container header-inner">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <a href="#" class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <span>WanderSquad</span>
+        </a>
+
+        <!-- Multi-Trip Switcher Dropdown -->
+        <div class="trip-dropdown-wrapper">
+          <button type="button" class="btn btn-secondary btn-sm" id="active-trip-dropdown-btn" style="display: flex; align-items: center; gap: 0.5rem; background: var(--surface-raised);">
+            <span>Select Trip</span>
+          </button>
+          <div id="active-trip-dropdown-menu" class="trip-dropdown-menu"></div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary btn-sm" id="copy-invite-link" title="Copy friend invite link">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <span>Invite Friends</span>
+        </button>
+
+        <button type="button" class="btn btn-ghost btn-sm" id="auth-user-btn" style="padding-left: 0.35rem;">
+          <img id="auth-user-avatar" class="avatar" style="width: 28px; height: 28px;" src="" alt="Profile">
+          <span id="auth-user-name">Account</span>
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Trip Header / Hero Section -->
+    <section id="trip-header-view" class="trip-hero">
+      <div class="trip-hero-backdrop" data-hero-backdrop>
+        <div class="trip-hero-overlay"></div>
+      </div>
+      <div class="trip-hero-content">
+        <div class="trip-main-info">
+          <div class="trip-title-group">
+            <h1>
+              <span data-trip-title>Trip Name</span>
+              <span data-trip-countdown class="badge"></span>
+            </h1>
+            <div class="trip-meta-row">
+              <span class="trip-meta-item">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span data-trip-location>Destination</span>
+              </span>
+              <span>•</span>
+              <span class="trip-meta-item">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span data-trip-dates>Dates</span>
+              </span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+            <div class="avatar-group" data-squad-avatars></div>
+            <button type="button" class="btn btn-secondary btn-sm" id="open-new-trip-modal" style="background: var(--accent-tint); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+              + New Trip
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" id="open-edit-trip" title="Edit trip details">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              <span>Edit Trip</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trip High-level Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Total Shared Bills</div>
+          <div class="stat-value" data-stat-total-spent>€0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Activities Done</div>
+          <div class="stat-value" data-stat-activities>0/0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon amber">
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Packed & Ready</div>
+          <div class="stat-value" data-stat-packing>0%</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon purple">
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Companion Squad</div>
+          <div class="stat-value" data-stat-squad>4 Travelers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-nav" aria-label="Trip planning sections">
+      <button type="button" class="tab-btn is-active" data-tab-target="panel-itinerary">
+        <span>📅 Itinerary</span>
+        <span class="tab-badge" data-badge-itinerary>0</span>
+      </button>
+      <button type="button" class="tab-btn" data-tab-target="panel-expenses">
+        <span>💰 Expenses & Splitter</span>
+        <span class="tab-badge" data-badge-expenses>0</span>
+      </button>
+      <button type="button" class="tab-btn" data-tab-target="panel-packing">
+        <span>🎒 Packing Checklist</span>
+        <span class="tab-badge" data-badge-packing>0</span>
+      </button>
+      <button type="button" class="tab-btn" data-tab-target="panel-friends">
+        <span>👥 Squad Members</span>
+        <span class="tab-badge" data-badge-squad>0</span>
+      </button>
+    </nav>
+
+    <!-- Tab 1: Itinerary Section -->
+    <section id="panel-itinerary" class="tab-panel is-active">
+      <div id="itinerary-view">
+        <div class="itinerary-controls">
+          <div class="day-filter-pills" data-day-filters></div>
+          <button type="button" class="btn btn-primary btn-sm" id="open-add-activity">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Add Activity</span>
+          </button>
+        </div>
+        <div class="itinerary-timeline" data-timeline></div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Expenses & Splitter Section -->
+    <section id="panel-expenses" class="tab-panel">
+      <div id="expenses-view" class="expenses-grid">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+            <h2 style="font-size: 1.25rem; margin: 0;">Shared Bills & Expenses</h2>
+            <button type="button" class="btn btn-primary btn-sm" id="open-add-expense">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Add Expense</span>
+            </button>
+          </div>
+          <div data-expense-list></div>
+        </div>
+
+        <div>
+          <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Debt Settlement ("Who Owes Whom")</h2>
+          <div class="card">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Calculated automatically using debt simplification so your squad settles up with the fewest possible transfers.
+            </p>
+            <div data-settlement-list></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Packing Checklist Section -->
+    <section id="panel-packing" class="tab-panel">
+      <div id="packing-view">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 1.25rem; margin: 0;">Group & Personal Checklist</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Assign critical gear, paperwork and essentials to companions.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="open-add-pack">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Add Item</span>
+          </button>
+        </div>
+        <div class="packing-grid" data-packing-container></div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Squad Members Section -->
+    <section id="panel-friends" class="tab-panel">
+      <div id="friends-view">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 1.25rem; margin: 0;">Traveling Companions</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Your crew members who share the itinerary and expenses.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="open-add-companion">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+            <span>Add Friend</span>
+          </button>
+        </div>
+        <div class="friends-grid" data-friends-grid></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="app-container footer-inner">
+      <div>
+        <strong>WanderSquad</strong> — Built for travel groups, roadtrips and weekend getaways.
+      </div>
+      <div>
+        Google Sign-In ready &bull; Real-time debt calculation &bull; Saved offline
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- MODALS -->
+
+  <!-- Modal: Create New Trip -->
+  <div id="new-trip-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New Trip</h3>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      <form id="new-trip-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="nt-title">Trip Title</label>
+            <input type="text" name="title" id="nt-title" class="form-control" placeholder="e.g. Swiss Alps Ski Retreat" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nt-dest">Destination</label>
+            <input type="text" name="destination" id="nt-dest" class="form-control" placeholder="e.g. Zermatt, Switzerland" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="nt-start">Start Date</label>
+              <input type="date" name="startDate" id="nt-start" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="nt-end">End Date</label>
+              <input type="date" name="endDate" id="nt-end" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nt-cover">Cover Image URL (Unsplash)</label>
+            <input type="url" name="coverImage" id="nt-cover" class="form-control" placeholder="https://images.unsplash.com/...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Trip 🚀</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Google Sign-In & User Profile -->
+  <div id="auth-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>User Profile & Google Sign-In</h3>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: var(--text-muted);">
+          Sign in with your Google account, or switch between demo travelers in your friend group.
+        </p>
+
+        <!-- Google OAuth GIS Section -->
+        <div class="google-auth-box">
+          <div id="google-status-notice" style="font-size: 0.82rem; margin-bottom: 0.75rem; color: var(--text-muted);"></div>
+          <div id="google-signin-btn-container" style="display: flex; justify-content: center;"></div>
+        </div>
+
+        <details id="oauth-config-details" style="margin-top: 1rem; background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.75rem;">
+          <summary style="font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--accent);">
+            🔑 Enter Google Client ID & Secret
+          </summary>
+          <form id="oauth-config-form" style="margin-top: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label" for="cfg-google-client-id">Google Client ID</label>
+              <input type="text" id="cfg-google-client-id" class="form-control" placeholder="123456789-abcdef.apps.googleusercontent.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cfg-google-secret-id">Client Secret</label>
+              <input type="password" id="cfg-google-secret-id" class="form-control" placeholder="GOCSPX-...">
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Save Google Credentials</button>
+          </form>
+        </details>
+
+        <div style="margin-top: 1.5rem;">
+          <label class="form-label">Or Switch Active Traveler (Instant Demo)</label>
+          <div id="demo-user-picker" style="display: grid; grid-template-columns: 1fr; gap: 0.5rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Activity -->
+  <div id="activity-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Trip Activity</h3>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      <form id="activity-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="act-title">Activity Title</label>
+            <input type="text" name="title" id="act-title" class="form-control" placeholder="e.g. Catamaran Sunset Cruise" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="act-day">Trip Day</label>
+              <input type="number" name="day" id="act-day" class="form-control" value="1" min="1" max="60" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="act-time">Time</label>
+              <input type="time" name="time" id="act-time" class="form-control" value="10:00">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="act-location">Location</label>
+              <input type="text" name="location" id="act-location" class="form-control" placeholder="e.g. Marina Grande Pier 2">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="act-cat">Category</label>
+              <select name="category" id="act-cat" class="form-control">
+                <option value="Activity">Activity / Fun</option>
+                <option value="Food">Food & Drinks</option>
+                <option value="Tour">Tour & Sightseeing</option>
+                <option value="Transport">Flight / Transport</option>
+                <option value="Stay">Hotel / Stay</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="act-notes">Notes or Booking Codes</label>
+            <textarea name="notes" id="act-notes" class="form-control" rows="2" placeholder="Confirmation numbers, meeting spot tips..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Activity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Expense -->
+  <div id="expense-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Record Shared Expense</h3>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      <form id="expense-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="exp-title">What was this for?</label>
+            <input type="text" name="title" id="exp-title" class="form-control" placeholder="e.g. Seafood Dinner at Marina" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="exp-amount">Amount</label>
+              <input type="number" step="0.01" min="0.5" name="amount" id="exp-amount" class="form-control" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="exp-category">Category</label>
+              <select name="category" id="exp-category" class="form-control">
+                <option value="Food">Food & Drinks</option>
+                <option value="Stay">Accommodations</option>
+                <option value="Transport">Car / Flights / Gas</option>
+                <option value="Activities">Tickets & Tours</option>
+                <option value="Groceries">Groceries / Supplies</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="exp-payer">Who paid?</label>
+            <select name="paidById" id="exp-payer" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Split equally among:</label>
+            <div id="exp-split-container" style="display: flex; flex-wrap: wrap;"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Packing Item -->
+  <div id="pack-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Checklist Item</h3>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      <form id="pack-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="pack-item">Item Name</label>
+            <input type="text" name="item" id="pack-item" class="form-control" placeholder="e.g. Sunscreen SPF 50 or Passports" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="pack-cat">Category</label>
+              <select name="category" id="pack-cat" class="form-control">
+                <option value="Gear">Gear & Electronics</option>
+                <option value="Documents">Documents & Tickets</option>
+                <option value="Health">Health & Toiletries</option>
+                <option value="Clothing">Clothing & Footwear</option>
+                <option value="Activities">Activities / Beach</option>
+                <option value="General">General</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pack-assignee">Assigned to</label>
+              <select name="assignedTo" id="pack-assignee" class="form-control"></select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Add to List</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Trip Info -->
+  <div id="edit-trip-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Trip Details</h3>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      <form id="edit-trip-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="trip-f-title">Trip Title</label>
+            <input type="text" name="title" id="trip-f-title" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="trip-f-destination">Destination</label>
+            <input type="text" name="destination" id="trip-f-destination" class="form-control" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="trip-f-start">Start Date</label>
+              <input type="date" name="startDate" id="trip-f-start" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="trip-f-end">End Date</label>
+              <input type="date" name="endDate" id="trip-f-end" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="trip-f-cover">Cover Image URL</label>
+            <input type="url" name="coverImage" id="trip-f-cover" class="form-control" placeholder="https://images.unsplash.com/...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Trip</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Companion -->
+  <div id="companion-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add Companion to Squad</h3>
+        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-close-modal aria-label="Close modal">&times;</button>
+      </div>
+      <form id="companion-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="f-name">Friend's Name</label>
+            <input type="text" name="name" id="f-name" class="form-control" placeholder="e.g. Clara Oswald" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="f-email">Email Address</label>
+            <input type="email" name="email" id="f-email" class="form-control" placeholder="clara@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="f-role">Role / Nickname</label>
+            <input type="text" name="role" id="f-role" class="form-control" placeholder="e.g. Co-Pilot, DJ, Treasurer">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Companion</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- App Entry Script -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

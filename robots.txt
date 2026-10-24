@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wandersquad.app/sitemap.xml
