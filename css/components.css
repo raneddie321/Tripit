@@ -1,4 +1,4 @@
-/* WanderSquad UI Components */
+/* WanderSquad Light UI Components */
 
 /* Buttons */
 .btn {
@@ -24,7 +24,7 @@
 .btn-primary {
   background: var(--accent);
   color: #ffffff;
-  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary:hover {
@@ -32,14 +32,15 @@
 }
 
 .btn-secondary {
-  background: var(--surface-raised);
+  background: var(--surface);
   border-color: var(--border);
   color: var(--text);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
-  background: var(--surface-hover);
-  border-color: #3b4d70;
+  background: var(--surface-raised);
+  border-color: #94a3b8;
 }
 
 .btn-ghost {
@@ -77,26 +78,27 @@
   font-weight: 600;
 }
 
-.badge-blue { background: var(--accent-tint); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.25); }
-.badge-green { background: var(--secondary-tint); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.25); }
-.badge-amber { background: var(--warning-tint); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.25); }
-.badge-purple { background: var(--purple-tint); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.25); }
+.badge-blue { background: var(--accent-tint); color: var(--accent); border: 1px solid rgba(79, 70, 229, 0.2); }
+.badge-green { background: var(--secondary-tint); color: var(--secondary); border: 1px solid rgba(22, 163, 74, 0.2); }
+.badge-amber { background: var(--warning-tint); color: var(--warning); border: 1px solid rgba(217, 119, 6, 0.2); }
+.badge-purple { background: var(--purple-tint); color: var(--purple); border: 1px solid rgba(124, 58, 237, 0.2); }
 
 /* User / Squad Avatar */
 .avatar {
   width: 34px;
   height: 34px;
   border-radius: var(--radius-full);
-  background: var(--surface-hover);
-  border: 2px solid var(--surface);
+  background: var(--surface-raised);
+  border: 2px solid #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 0.8rem;
-  color: #fff;
+  color: var(--text);
   flex-shrink: 0;
   object-fit: cover;
+  box-shadow: var(--shadow-sm);
 }
 
 .avatar-group {
@@ -140,19 +142,20 @@
 /* Stats Row */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 }
 
 .stat-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1rem 1.25rem;
+  padding: 1.25rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-icon {
@@ -176,6 +179,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.2rem;
+  font-weight: 600;
 }
 
 .stat-value {
@@ -206,7 +210,7 @@
 .day-pill {
   padding: 0.4rem 0.85rem;
   border-radius: var(--radius-full);
-  background: var(--surface-raised);
+  background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text-muted);
   font-size: 0.82rem;
@@ -218,7 +222,8 @@
 .day-pill:hover, .day-pill.is-active {
   background: var(--accent-tint);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .itinerary-timeline {
@@ -235,12 +240,14 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1rem;
-  transition: border-color 150ms ease, transform 150ms ease;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .timeline-item:hover {
-  border-color: #3b5078;
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
 }
 
 .timeline-time {
@@ -260,7 +267,7 @@
 }
 
 .timeline-content h4 {
-  font-size: 0.98rem;
+  font-size: 1rem;
   margin-bottom: 0.25rem;
 }
 
@@ -274,7 +281,7 @@
 }
 
 .timeline-notes {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
   margin: 0;
 }
@@ -312,15 +319,16 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.85rem 1rem;
-  background: var(--surface-raised);
+  padding: 1rem;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .expense-info h4 {
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   margin-bottom: 0.15rem;
 }
 
@@ -353,11 +361,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1rem;
   border-radius: var(--radius);
   background: var(--surface-raised);
   border: 1px solid var(--border);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
   font-size: 0.88rem;
 }
 
@@ -388,7 +396,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.65rem 0.85rem;
+  padding: 0.75rem 0.85rem;
   border-radius: var(--radius-sm);
   background: var(--surface-raised);
   border: 1px solid var(--border);
@@ -416,6 +424,7 @@
 .check-title {
   flex: 1;
   font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .check-assignee {
@@ -438,10 +447,11 @@
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  padding: 1rem;
+  padding: 1.15rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .friend-details {
@@ -471,7 +481,7 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -549,18 +559,19 @@
 
 .form-control {
   width: 100%;
-  background: var(--surface-raised);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 0.65rem 0.85rem;
+  padding: 0.65rem 0.88rem;
   color: var(--text);
   font-size: 0.92rem;
-  transition: border-color 150ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .form-control:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint);
 }
 
 .form-row {
@@ -582,7 +593,7 @@
 }
 
 .toast {
-  background: var(--surface-raised);
+  background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
   padding: 0.75rem 1.1rem;

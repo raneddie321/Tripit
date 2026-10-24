@@ -5,21 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WanderSquad — Professional Multi-Trip Planner & Split Expenses</title>
   <meta name="description" content="Plan unlimited trips with friends. Collaborative day-by-day itineraries, smart expense splitting, shared packing checklists and squad coordination.">
-  <meta name="keywords" content="trip planner, travel with friends, group travel, split expenses, itinerary maker">
   <link rel="canonical" href="https://wandersquad.app/">
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://wandersquad.app/">
-  <meta property="og:title" content="WanderSquad — Group Trip Planner & Split Expenses">
-  <meta property="og:description" content="Plan epic trips with friends. Collaborative day-by-day itineraries, smart expense splitting and shared checklists.">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&auto=format&fit=crop&q=80">
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:title" content="WanderSquad — Group Trip Planner">
-  <meta property="twitter:description" content="Collaborative day-by-day itineraries, smart expense splitting and shared checklists for trips with friends.">
-  <meta property="twitter:image" content="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&auto=format&fit=crop&q=80">
 
   <!-- Fonts & Styles -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -89,7 +75,7 @@
 
         <!-- Multi-Trip Switcher Dropdown -->
         <div class="trip-dropdown-wrapper">
-          <button type="button" class="btn btn-secondary btn-sm" id="active-trip-dropdown-btn" style="display: flex; align-items: center; gap: 0.5rem; background: var(--surface-raised);">
+          <button type="button" class="btn btn-secondary btn-sm" id="active-trip-dropdown-btn" style="display: flex; align-items: center; gap: 0.5rem; background: var(--surface);">
             <span>Select Trip</span>
           </button>
           <div id="active-trip-dropdown-menu" class="trip-dropdown-menu"></div>
@@ -148,7 +134,7 @@
 
           <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
             <div class="avatar-group" data-squad-avatars></div>
-            <button type="button" class="btn btn-secondary btn-sm" id="open-new-trip-modal" style="background: var(--accent-tint); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+            <button type="button" class="btn btn-secondary btn-sm" id="open-new-trip-modal" style="background: var(--surface); color: var(--accent); border-color: rgba(79, 70, 229, 0.3);">
               + New Trip
             </button>
             <button type="button" class="btn btn-secondary btn-sm" id="open-edit-trip" title="Edit trip details">
@@ -606,7 +592,7 @@
             <label class="form-label" for="f-name">Friend's Name</label>
             <input type="text" name="name" id="f-name" class="form-control" placeholder="e.g. Clara Oswald" required>
           </div>
-          <div class="form-group">
+      <div class="form-group">
             <label class="form-label" for="f-email">Email Address</label>
             <input type="email" name="email" id="f-email" class="form-control" placeholder="clara@example.com">
           </div>
